@@ -62,7 +62,7 @@
 #include <pcl/point_types.h>
 
 #include <sl/Camera.hpp>
-
+#include "zed_wrapper/helloworld.h"
 using namespace std;
 
 namespace zed_wrapper {
@@ -166,6 +166,14 @@ namespace zed_wrapper {
         bool file_exist(const std::string& name) {
             struct stat buffer;
             return (stat(name.c_str(), &buffer) == 0);
+        }
+        bool helloworld(zed_wrapper::helloworld::Request &req,
+        zed_wrapper::helloworld::Response &res)
+        {
+          res.B = req.A + 5;
+          ROS_INFO("LOL");
+          return true;
+
         }
 
         /* \brief Image to ros message conversion
@@ -584,6 +592,7 @@ namespace zed_wrapper {
             zed.reset();
         }
         boost::shared_ptr<dynamic_reconfigure::Server<zed_wrapper::ZedConfig>> server;
+
         void onInit() {
             // Launch file parameters
             resolution = sl::RESOLUTION_HD720;
@@ -734,7 +743,8 @@ namespace zed_wrapper {
             //Odometry publisher
             pub_odom = nh.advertise<nav_msgs::Odometry>(odometry_topic, 1);
             NODELET_INFO_STREAM("Advertized on topic " << odometry_topic);
-
+            ros::ServiceServer service = nh.advertiseService("HELLWORLD",helloworld);
+            NODELET_INFO_STREAM("HELLOWORLD SERVICE READY");
             device_poll_thread = boost::shared_ptr<boost::thread>
                     (new boost::thread(boost::bind(&ZEDWrapperNodelet::device_poll, this)));
         }

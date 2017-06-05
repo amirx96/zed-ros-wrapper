@@ -33,10 +33,21 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   pcl_conversions
   nodelet
+  std_msgs
+  message_generation
 )
 
 generate_dynamic_reconfigure_options(
   cfg/Zed.cfg
+)
+add_service_files(
+  FILES
+  helloworld.srv
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
 )
 
 catkin_package(
@@ -81,6 +92,8 @@ set(LINK_LIBRARIES
   ${CUDA_LIBRARIES} ${CUDA_nppi_LIBRARY} ${CUDA_npps_LIBRARY}
   ${OpenCV_LIBS}
   ${PCL_LIBRARIES})
+
+
 
 add_library(ZEDWrapper src/zed_wrapper_nodelet.cpp)
 target_link_libraries(ZEDWrapper ${LINK_LIBRARIES})
